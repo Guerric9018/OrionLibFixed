@@ -48,17 +48,33 @@ end
 
 local Orion = Instance.new("ScreenGui")
 Orion.Name = "Orion"
-Orion.Parent = LocalPlayer.PlayerGui
+if syn then
+	syn.protect_gui(Orion)
+	Orion.Parent = game.CoreGui
+else
+	Orion.Parent = gethui() or game.CoreGui
+end
 
-for _, Interface in ipairs(LocalPlayer.PlayerGui:GetChildren()) do
-	if Interface.Name == Orion.Name and Interface ~= Orion then
-		Interface:Destroy()
+if gethui then
+	for _, Interface in ipairs(gethui():GetChildren()) do
+		if Interface.Name == Orion.Name and Interface ~= Orion then
+			Interface:Destroy()
+		end
+	end
+else
+	for _, Interface in ipairs(game.CoreGui:GetChildren()) do
+		if Interface.Name == Orion.Name and Interface ~= Orion then
+			Interface:Destroy()
+		end
 	end
 end
 
 function OrionLib:IsRunning()
-
-	return Orion.Parent ==	LocalPlayer.PlayerGui
+	if gethui then
+		return Orion.Parent == gethui()
+	else
+		return Orion.Parent == game:GetService("CoreGui")
+	end
 
 end
 
@@ -215,7 +231,17 @@ local function LoadCfg(Config)
 end
 
 local function SaveCfg(Name)
-	return
+	local Data = {}
+	for i,v in pairs(OrionLib.Flags) do
+		if v.Save then
+			if v.Type == "Colorpicker" then
+				Data[i] = PackColor(v.Value)
+			else
+				Data[i] = v.Value
+			end
+		end	
+	end
+	writefile(OrionLib.Folder .. "/" .. Name .. ".txt", tostring(HttpService:JSONEncode(Data)))
 end
 
 local WhitelistedMouse = {Enum.UserInputType.MouseButton1, Enum.UserInputType.MouseButton2,Enum.UserInputType.MouseButton3}
@@ -460,6 +486,12 @@ function OrionLib:MakeWindow(WindowConfig)
 	OrionLib.Folder = WindowConfig.ConfigFolder
 	OrionLib.SaveCfg = WindowConfig.SaveConfig
 
+	if WindowConfig.SaveConfig then
+		if not isfolder(WindowConfig.ConfigFolder) then
+			makefolder(WindowConfig.ConfigFolder)
+		end	
+	end
+
 	local TabHolder = AddThemeObject(SetChildren(SetProps(MakeElement("ScrollFrame", Color3.fromRGB(255, 255, 255), 4), {
 		Size = UDim2.new(1, 0, 1, -50)
 	}), {
@@ -670,8 +702,7 @@ function OrionLib:MakeWindow(WindowConfig)
 			Position = UDim2.new(0.5, 19, 0.5, 0),
 			TextXAlignment = Enum.TextXAlignment.Center,
 			Font = Enum.Font.GothamBold,
-			TextTransparency = 1,
-			TextSize = 30
+			TextTransparency = 1
 		})
 
 		local LoadSequenceText2 = SetProps(MakeElement("Label", "by Guerric", 14), {
@@ -1171,17 +1202,8 @@ function OrionLib:MakeWindow(WindowConfig)
 						Dropdown.Buttons[Option] = OptionBtn
 					end
 				end	
-				
-				local function copyTable(original)
-					local copy = {}
-					for key, value in pairs(original) do
-						copy[key] = value
-					end
-					return copy
-				end
 
 				function Dropdown:Refresh(Options, Delete)
-					print(Options)
 					if Delete then
 						for _,v in pairs(Dropdown.Buttons) do
 							v:Destroy()
@@ -1189,8 +1211,7 @@ function OrionLib:MakeWindow(WindowConfig)
 						table.clear(Dropdown.Options)
 						table.clear(Dropdown.Buttons)
 					end
-					Dropdown.Options = copyTable(Options)
-					print(Dropdown.Options)
+					Dropdown.Options = Options
 					AddOptions(Dropdown.Options)
 				end  
 
@@ -1703,7 +1724,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		end
 		return ElementFunction   
 	end  
-
+	
 	--if writefile and isfile then
 	--	if not isfile("NewLibraryNotification1.txt") then
 	--		local http_req = (syn and syn.request) or (http and http.request) or http_request
@@ -1746,9 +1767,9 @@ function OrionLib:MakeWindow(WindowConfig)
 	--		writefile("NewLibraryNotification1.txt","The value for the notification having been sent to you.")
 	--	end
 	--end
+	
 
-
-
+	
 	return TabFunction
 end   
 
