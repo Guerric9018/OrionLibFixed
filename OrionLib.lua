@@ -1203,6 +1203,14 @@ function OrionLib:MakeWindow(WindowConfig)
 					end
 				end	
 
+				local function copyTable(original)
+					local copy = {}
+					for key, value in pairs(original) do
+						copy[key] = value
+					end
+					return copy
+				end
+
 				function Dropdown:Refresh(Options, Delete)
 					if Delete then
 						for _,v in pairs(Dropdown.Buttons) do
@@ -1211,7 +1219,7 @@ function OrionLib:MakeWindow(WindowConfig)
 						table.clear(Dropdown.Options)
 						table.clear(Dropdown.Buttons)
 					end
-					Dropdown.Options = Options
+					Dropdown.Options = copyTable(Options)
 					AddOptions(Dropdown.Options)
 				end  
 
