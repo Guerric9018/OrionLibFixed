@@ -1223,6 +1223,10 @@ function OrionLib:MakeWindow(WindowConfig)
 					AddOptions(Dropdown.Options)
 				end  
 
+				function Dropdown:Title(Text)
+					DropdownFrame.F.Content.Text = Text
+				end
+
 				function Dropdown:Set(Value)
 					if not table.find(Dropdown.Options, Value) then
 						Dropdown.Value = "..."
