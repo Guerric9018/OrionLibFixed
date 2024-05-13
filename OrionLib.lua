@@ -1224,7 +1224,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				end  
 
 				function Dropdown:Title(Text)
-					DropdownFrame.Content.Text = Text
+					DropdownFrame.F.Content.Text = Text
 				end
 
 				function Dropdown:Set(Value)
