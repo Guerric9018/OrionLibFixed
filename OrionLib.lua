@@ -1441,7 +1441,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				}), "Second")
 
 				function Textbox:Title(Text)
-					TextboxFrame.F.Content.Text = Text
+					TextboxFrame.Content.Text = Text
 				end
 
 				AddConnection(TextboxActual:GetPropertyChangedSignal("Text"), function()
