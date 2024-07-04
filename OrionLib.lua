@@ -1794,7 +1794,7 @@ function OrionLib:MakeWindow(WindowConfig)
 end   
 
 function OrionLib:Switch()
-	Orion.visible = not Orion.visible
+	Orion.Enabled = not Orion.Enabled
 end
 
 function OrionLib:Destroy()
