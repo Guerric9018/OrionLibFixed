@@ -1793,6 +1793,10 @@ function OrionLib:MakeWindow(WindowConfig)
 	return TabFunction
 end   
 
+function OrionLib:Switch()
+	Orion.visible = not Orion.visible
+end
+
 function OrionLib:Destroy()
 	Orion:Destroy()
 end
